@@ -77,6 +77,7 @@ def get_moreDA_augmentation(dataloader_train, dataloader_val, patch_size, params
         independent_scale_for_each_axis=params.get("independent_scale_factor_for_each_axis")
     ))
 
+    '''
     if params.get("dummy_2D"):
         tr_transforms.append(Convert2DTo3DTransform())
 
@@ -102,6 +103,7 @@ def get_moreDA_augmentation(dataloader_train, dataloader_val, patch_size, params
         GammaTransform(params.get("gamma_range"), True, True, retain_stats=params.get("gamma_retain_stats"),
                        p_per_sample=0.1))  # inverted gamma
 
+    '''
     if params.get("do_gamma"):
         tr_transforms.append(
             GammaTransform(params.get("gamma_range"), False, True, retain_stats=params.get("gamma_retain_stats"),
@@ -152,6 +154,9 @@ def get_moreDA_augmentation(dataloader_train, dataloader_val, patch_size, params
 
     tr_transforms.append(NumpyToTensor(['data', 'target'], 'float'))
     tr_transforms = Compose(tr_transforms)
+
+    #print("transforms", tr_transforms)
+    #exit()
 
     if use_nondetMultiThreadedAugmenter:
         if NonDetMultiThreadedAugmenter is None:
