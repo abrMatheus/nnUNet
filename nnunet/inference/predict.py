@@ -184,6 +184,7 @@ def predict_cases(model, list_of_lists, output_filenames, folds, save_npz, num_t
     trainer, params = load_model_and_checkpoint_files(model, folds, mixed_precision=mixed_precision,
                                                       checkpoint_name=checkpoint_name)
 
+    print("trainer", trainer)
     if segmentation_export_kwargs is None:
         if 'segmentation_export_params' in trainer.plans.keys():
             force_separate_z = trainer.plans['segmentation_export_params']['force_separate_z']
@@ -212,6 +213,7 @@ def predict_cases(model, list_of_lists, output_filenames, folds, save_npz, num_t
             d = data
 
         print("predicting", output_filename)
+        print("\n loading ram file p[0]\n")
         trainer.load_checkpoint_ram(params[0], False)
         softmax = trainer.predict_preprocessed_data_return_seg_and_softmax(
             d, do_mirroring=do_tta, mirror_axes=trainer.data_aug_params['mirror_axes'], use_sliding_window=True,
@@ -219,6 +221,7 @@ def predict_cases(model, list_of_lists, output_filenames, folds, save_npz, num_t
             mixed_precision=mixed_precision)[1]
 
         for p in params[1:]:
+            print("\n loading ram file p\n")
             trainer.load_checkpoint_ram(p, False)
             softmax += trainer.predict_preprocessed_data_return_seg_and_softmax(
                 d, do_mirroring=do_tta, mirror_axes=trainer.data_aug_params['mirror_axes'], use_sliding_window=True,

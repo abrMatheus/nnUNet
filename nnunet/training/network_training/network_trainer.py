@@ -313,10 +313,11 @@ class NetworkTrainer(object):
         return self.load_checkpoint(filename, train=train)
 
     def load_checkpoint(self, fname, train=True):
+        print("loading checkpoint", fname, "train=", train)
         self.print_to_log_file("loading checkpoint", fname, "train=", train)
         if not self.was_initialized:
             self.initialize(train)
-        # saved_model = torch.load(fname, map_location=torch.device('cuda', torch.cuda.current_device()))
+        # saved_model = torch.load(fname, map_location=to)rch.device('cuda', torch.cuda.current_device()))
         saved_model = torch.load(fname, map_location=torch.device('cpu'))
         self.load_checkpoint_ram(saved_model, train)
 
@@ -362,8 +363,13 @@ class NetworkTrainer(object):
                 if 'amp_grad_scaler' in checkpoint.keys():
                     self.amp_grad_scaler.load_state_dict(checkpoint['amp_grad_scaler'])
 
+
+        print("checkpoint", checkpoint['state_dict'].keys())
+        print("state_dict", new_state_dict.keys())
+        print("network", self.network)
         self.network.load_state_dict(new_state_dict)
         self.epoch = checkpoint['epoch']
+        print("OIOI")
         if train:
             optimizer_state_dict = checkpoint['optimizer_state_dict']
             if optimizer_state_dict is not None:
